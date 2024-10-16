@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="navigate_to_previous_screen">Wróć do poprzedniego ekranu</string>
+
+    <string name="no_value">Brak</string>
+
+    <string name="navigate_to_settings_description">Przejdź do ustawień</string>
+
+    <string name="settings">Ustawienia</string>
+    <string name="language">Język</string>
+    <string name="system">System</string>
+
+    <string name="dark">Ciemny</string>
+    <string name="light">Jasny</string>
+    <string name="theme">Motyw</string>
+    <string name="settings_dynamic_theme">Dynamiczny motyw</string>
+    <string name="name">Nazwa</string>
+</resources>
