@@ -3,6 +3,8 @@ package com.kssidll.opierdalo.domain.notification
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.media.AudioAttributes
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -17,6 +19,10 @@ import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
 import com.kssidll.opierdalo.R
 
+fun getCustomSoundUri(context: Context, resourceId: Int): Uri {
+    return Uri.parse("android.resource://${context.packageName}/$resourceId")
+}
+
 @Suppress("MemberVisibilityCanBePrivate")
 object ReminderNotification {
     fun notification(context: Context) = NotificationCompat.Builder(
@@ -27,6 +33,7 @@ object ReminderNotification {
         .setContentText(CONTENT_TEXT)
         .setPriority(NOTIFICATION_PRIORITY)
         .setSmallIcon(R.drawable.ic_stat_name)
+        .setSound(getCustomSoundUri(context, R.raw.notif))
         .build()
 
     fun show(context: Context) {
@@ -40,16 +47,25 @@ object ReminderNotification {
         }
     }
 
-    fun notificationChannel() = NotificationChannelCompat.Builder(
-        CHANNEL_ID,
-        CHANNEL_IMPORTANCE
-    )
-        .setDescription(CHANNEL_DESCRIPTION)
-        .setName(CHANNEL_NAME)
-        .setLightsEnabled(true)
-        .setVibrationEnabled(true)
-        .setVibrationPattern(longArrayOf(1000, 1000, 1000))
-        .build()
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun notificationChannel(context: Context): NotificationChannelCompat {
+        val audioAttributes = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .build()
+
+        return NotificationChannelCompat.Builder(
+            CHANNEL_ID,
+            CHANNEL_IMPORTANCE
+        )
+            .setDescription(CHANNEL_DESCRIPTION)
+            .setName(CHANNEL_NAME)
+            .setLightsEnabled(true)
+            .setVibrationEnabled(true)
+            .setVibrationPattern(longArrayOf(1000, 1000, 1000))
+            .setSound(getCustomSoundUri(context, R.raw.notif), audioAttributes)
+            .build()
+    }
 
     const val CHANNEL_ID = "reminders_channel"
     const val CHANNEL_NAME = "Reminder"
@@ -70,7 +86,7 @@ class ReminderNotificationScheduler(
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = ReminderNotification.notificationChannel()
+            val channel = ReminderNotification.notificationChannel(context)
 
             val notificationManager = NotificationManagerCompat.from(context)
             notificationManager.createNotificationChannel(channel)
