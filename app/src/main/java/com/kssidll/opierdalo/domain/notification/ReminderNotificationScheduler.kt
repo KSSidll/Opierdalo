@@ -2,6 +2,7 @@ package com.kssidll.opierdalo.domain.notification
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Notification
 import android.content.Context
 import android.media.AudioAttributes
 import android.net.Uri
@@ -18,6 +19,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
 import com.kssidll.opierdalo.R
+import com.kssidll.opierdalo.domain.data.Reminder
 
 fun getCustomSoundUri(context: Context, resourceId: Int): Uri {
     return Uri.parse("android.resource://${context.packageName}/$resourceId")
@@ -25,19 +27,36 @@ fun getCustomSoundUri(context: Context, resourceId: Int): Uri {
 
 @Suppress("MemberVisibilityCanBePrivate")
 object ReminderNotification {
-    fun notification(context: Context) = NotificationCompat.Builder(
-        context,
-        CHANNEL_ID
-    )
-        .setContentTitle(CONTENT_TITLE)
-        .setContentText(CONTENT_TEXT)
-        .setPriority(NOTIFICATION_PRIORITY)
-        .setSmallIcon(R.drawable.ic_stat_name)
-        .setSound(getCustomSoundUri(context, R.raw.notif))
-        .build()
+    fun notification(
+        context: Context,
+        reminderList: List<Reminder>
+    ): Notification {
+        val text = buildString {
+            appendLine(CONTENT_TEXT)
+            appendLine()
 
-    fun show(context: Context) {
-        val notification = notification(context)
+            reminderList.forEach {
+                appendLine(it.name)
+            }
+        }
+
+        return NotificationCompat.Builder(
+            context,
+            CHANNEL_ID
+        )
+            .setContentTitle(CONTENT_TITLE)
+            .setContentText(text)
+            .setPriority(NOTIFICATION_PRIORITY)
+            .setSmallIcon(R.drawable.ic_stat_name)
+            .setSound(getCustomSoundUri(context, R.raw.notif))
+            .build()
+    }
+
+    fun show(
+        context: Context,
+        reminderList: List<Reminder>
+    ) {
+        val notification = notification(context, reminderList)
 
         with(NotificationManagerCompat.from(context)) {
             try {

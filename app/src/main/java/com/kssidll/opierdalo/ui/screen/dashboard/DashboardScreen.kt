@@ -95,9 +95,9 @@ private fun DashboardScreenPreview() {
             DashboardScreen(
                 uiState = DashboardUiState(
                     reminder = persistentListOf(
-                        ReminderEntity(0, null, "test").toReminder(),
-                        ReminderEntity(1, null, "test").toReminder(),
-                        ReminderEntity(2, null, "test").toReminder(),
+                        ReminderEntity(0, "test").toReminder(),
+                        ReminderEntity(1, "test").toReminder(),
+                        ReminderEntity(2, "test").toReminder(),
                     )
                 ),
                 onEvent = {}

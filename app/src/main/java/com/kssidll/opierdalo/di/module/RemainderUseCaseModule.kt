@@ -9,14 +9,12 @@ import com.kssidll.opierdalo.domain.usecase.reminder.InsertReminderEntityUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.android.scopes.ViewModelScoped
+import dagger.hilt.components.SingletonComponent
 
 @Module
-@InstallIn(ViewModelComponent::class)
+@InstallIn(SingletonComponent::class)
 class ReminderUseCaseModule {
     @Provides
-    @ViewModelScoped
     fun provideInsertReminderEntityUseCase(
         reminderRepository: ReminderRepository
     ): InsertReminderEntityUseCase {
@@ -24,7 +22,6 @@ class ReminderUseCaseModule {
     }
 
     @Provides
-    @ViewModelScoped
     fun provideGetReminderEntityUseCase(
         reminderRepository: ReminderRepository
     ): GetReminderEntityUseCase {
@@ -32,7 +29,6 @@ class ReminderUseCaseModule {
     }
 
     @Provides
-    @ViewModelScoped
     fun provideGetReminderUseCase(
         getReminderEntityUseCase: GetReminderEntityUseCase
     ): GetReminderUseCase {
@@ -40,7 +36,6 @@ class ReminderUseCaseModule {
     }
 
     @Provides
-    @ViewModelScoped
     fun provideGetAllReminderEntityUseCase(
         reminderRepository: ReminderRepository
     ): GetAllReminderEntityUseCase {
@@ -48,7 +43,6 @@ class ReminderUseCaseModule {
     }
 
     @Provides
-    @ViewModelScoped
     fun provideGetAllReminderUseCase(
         getAllReminderEntityUseCase: GetAllReminderEntityUseCase
     ): GetAllReminderUseCase {

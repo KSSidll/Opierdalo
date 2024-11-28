@@ -4,6 +4,7 @@ import com.kssidll.opierdalo.data.dao.ReminderDao
 import com.kssidll.opierdalo.data.data.ReminderEntity
 import com.kssidll.opierdalo.domain.repository.ReminderRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
 class ReminderRepositoryImpl(private val dao: ReminderDao): ReminderRepository {
 
@@ -24,6 +25,11 @@ class ReminderRepositoryImpl(private val dao: ReminderDao): ReminderRepository {
     }
 
     override fun all(): Flow<List<ReminderEntity>> {
-        return dao.all()
+        return flowOf(
+            listOf(
+                ReminderEntity("test")
+            )
+        )
+//        return dao.all()
     }
 }

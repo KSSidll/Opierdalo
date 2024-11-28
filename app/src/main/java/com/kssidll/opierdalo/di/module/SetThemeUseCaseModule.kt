@@ -5,15 +5,13 @@ import com.kssidll.opierdalo.domain.usecase.SetColorSchemeUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.android.scopes.ViewModelScoped
+import dagger.hilt.components.SingletonComponent
 
 @Module
-@InstallIn(ViewModelComponent::class)
+@InstallIn(SingletonComponent::class)
 class SetThemeUseCaseModule {
     @Provides
-    @ViewModelScoped
     fun provideSetThemeUseCase(
         @ApplicationContext context: Context
     ): SetColorSchemeUseCase {

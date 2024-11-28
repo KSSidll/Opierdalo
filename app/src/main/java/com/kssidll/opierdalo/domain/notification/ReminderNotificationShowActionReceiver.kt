@@ -9,16 +9,37 @@ import android.util.Log
 import androidx.core.app.AlarmManagerCompat
 import androidx.core.app.PendingIntentCompat
 import androidx.core.content.ContextCompat
+import com.kssidll.opierdalo.domain.usecase.reminder.GetAllReminderUseCase
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import java.util.Calendar
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ReminderNotificationShowActionReceiver: BroadcastReceiver() {
+    @Inject
+    lateinit var getAllReminderUseCase: GetAllReminderUseCase
+    private var receiverJob: Job? = null
+
     override fun onReceive(
         context: Context?,
         intent: Intent?
     ) {
         context?.let {
-            ReminderNotification.show(it)
-            schedule(it)
+            receiverJob?.cancel()
+            receiverJob = CoroutineScope(Dispatchers.IO).launch {
+                val reminderList = getAllReminderUseCase().first()
+
+                if (reminderList.isNotEmpty()) {
+                    ReminderNotification.show(it, reminderList)
+                }
+
+                schedule(it)
+            }
         }
     }
 
@@ -43,7 +64,7 @@ class ReminderNotificationShowActionReceiver: BroadcastReceiver() {
                 AlarmManagerCompat.setExactAndAllowWhileIdle(
                     it,
                     AlarmManager.RTC_WAKEUP,
-                    System.currentTimeMillis() + delay,
+                    System.currentTimeMillis() + 10000,
                     pendingIntent
                 )
 

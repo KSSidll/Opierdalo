@@ -2,23 +2,17 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "0e4c4ab1d8040d3c6a2fdfd684086204",
+    "identityHash": "08728816f4ee00463995236cbaa633dc",
     "entities": [
       {
         "tableName": "ReminderEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `imageUri` TEXT, `name` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
-          },
-          {
-            "fieldPath": "imageUri",
-            "columnName": "imageUri",
-            "affinity": "TEXT",
-            "notNull": false
           },
           {
             "fieldPath": "name",
@@ -40,7 +34,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0e4c4ab1d8040d3c6a2fdfd684086204')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '08728816f4ee00463995236cbaa633dc')"
     ]
   }
 }
