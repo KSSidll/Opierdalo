@@ -19,13 +19,15 @@ import javax.inject.Inject
 
 @Stable
 data class DashboardUiState(
-    val reminder: ImmutableList<Reminder> = persistentListOf()
+    val reminder: ImmutableList<Reminder> = persistentListOf(),
+    val newReminderName: String = String()
 )
 
 @Immutable
 sealed class DashboardEvent {
     data object NavigateSettings: DashboardEvent()
     data object NavigateAddNewReminder: DashboardEvent()
+    data class SetNewReminderName(val newName: String): DashboardEvent()
 }
 
 @HiltViewModel
@@ -54,6 +56,14 @@ class DashboardViewModel @Inject constructor(
             is DashboardEvent.NavigateSettings -> {}
 
             is DashboardEvent.NavigateAddNewReminder -> {}
+
+            is DashboardEvent.SetNewReminderName -> {
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        newReminderName = event.newName
+                    )
+                }
+            }
         }
     }
 }

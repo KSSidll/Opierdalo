@@ -49,6 +49,8 @@ fun DashboardRoute(
                         }
                     }
                 }
+
+                is DashboardEvent.SetNewReminderName -> viewModel.handleEvent(event)
             }
         },
     )
