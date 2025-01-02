@@ -59,12 +59,15 @@ class ReminderNotificationShowActionReceiver: BroadcastReceiver() {
             )!! // null not possible unless flags includes FLAG_NO_CREATE
 
             alarmManager?.let {
-                val delay = getMillisecondsToNearestEvenTime()
+                val delay = getMillisecondsToNearestEvenTime(
+                    skipHoursStart = 22,
+                    skipHoursEnd = 9
+                )
 
                 AlarmManagerCompat.setExactAndAllowWhileIdle(
                     it,
                     AlarmManager.RTC_WAKEUP,
-                    System.currentTimeMillis() + 10000,
+                    System.currentTimeMillis() + delay,
                     pendingIntent
                 )
 
@@ -74,7 +77,7 @@ class ReminderNotificationShowActionReceiver: BroadcastReceiver() {
     }
 }
 
-fun getMillisecondsToNearestEvenTime(): Long {
+fun getMillisecondsToNearestEvenTime(skipHoursStart: Int, skipHoursEnd: Int): Long {
     // Get current time
     val now = Calendar.getInstance()
 
@@ -95,6 +98,18 @@ fun getMillisecondsToNearestEvenTime(): Long {
         nextEvenTime.set(Calendar.SECOND, 0)
         nextEvenTime.set(Calendar.MILLISECOND, 0)
         nextEvenTime.add(Calendar.HOUR_OF_DAY, 1)
+    }
+
+    // Offset disabled hours
+    val nextEvenTimeHours = now.get(Calendar.HOUR_OF_DAY)
+
+    if (nextEvenTimeHours >= skipHoursStart) {
+        nextEvenTime.set(Calendar.MINUTE, 0)
+        nextEvenTime.set(Calendar.HOUR_OF_DAY, skipHoursEnd)
+        nextEvenTime.add(Calendar.DAY_OF_YEAR, 1)
+    } else if (nextEvenTimeHours < skipHoursEnd) {
+        nextEvenTime.set(Calendar.MINUTE, 0)
+        nextEvenTime.set(Calendar.HOUR_OF_DAY, skipHoursEnd)
     }
 
     // Calculate and return milliseconds difference
