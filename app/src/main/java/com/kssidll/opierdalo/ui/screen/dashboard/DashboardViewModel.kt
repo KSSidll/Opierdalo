@@ -5,8 +5,11 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kssidll.opierdalo.data.data.ReminderEntity
 import com.kssidll.opierdalo.domain.data.Reminder
 import com.kssidll.opierdalo.domain.usecase.reminder.GetAllReminderUseCase
+import com.kssidll.opierdalo.domain.usecase.reminder.InsertReminderEntityUseCase
+import com.kssidll.opierdalo.domain.usecase.reminder.SetReminderCompleteStatusUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -27,12 +30,14 @@ data class DashboardUiState(
 sealed class DashboardEvent {
     data object NavigateSettings: DashboardEvent()
     data object NavigateAddNewReminder: DashboardEvent()
-    data class SetNewReminderName(val newName: String): DashboardEvent()
+    data class SetReminderCompleteStatus(val reminder: Reminder, val complete: Boolean): DashboardEvent()
 }
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
-    getAllReminderUseCase: GetAllReminderUseCase
+    getAllReminderUseCase: GetAllReminderUseCase,
+    private val setReminderCompleteStatusUseCase: SetReminderCompleteStatusUseCase,
+    private val insertReminderEntityUseCase: InsertReminderEntityUseCase
 ): ViewModel() {
     private val _uiState = MutableStateFlow(
         DashboardUiState()
@@ -44,7 +49,7 @@ class DashboardViewModel @Inject constructor(
             getAllReminderUseCase().collect {
                 _uiState.update { currentState ->
                     currentState.copy(
-                        reminder = it.toImmutableList()
+                        reminder = it.sortedBy { it.complete }.toImmutableList()
                     )
                 }
             }
@@ -55,15 +60,22 @@ class DashboardViewModel @Inject constructor(
         when (event) {
             is DashboardEvent.NavigateSettings -> {}
 
-            is DashboardEvent.NavigateAddNewReminder -> {}
-
-            is DashboardEvent.SetNewReminderName -> {
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        newReminderName = event.newName
+            is DashboardEvent.NavigateAddNewReminder -> {
+                //TODO remove and nav in route
+                viewModelScope.launch {
+                    insertReminderEntityUseCase(
+                        ReminderEntity(
+                            name = "test"
+                        )
                     )
                 }
             }
+
+            is DashboardEvent.SetReminderCompleteStatus -> setReminderCompleteStatus(event.reminder, event.complete)
         }
+    }
+
+    private fun setReminderCompleteStatus(reminder: Reminder, complete: Boolean) = viewModelScope.launch {
+        setReminderCompleteStatusUseCase(reminder, complete)
     }
 }

@@ -11,6 +11,8 @@ interface ReminderRepository {
 
     // Update
 
+    suspend fun update(reminderEntity: ReminderEntity)
+
     // Delete
 
     // Read

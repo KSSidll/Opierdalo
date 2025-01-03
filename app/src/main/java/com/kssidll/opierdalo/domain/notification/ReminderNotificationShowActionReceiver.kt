@@ -87,16 +87,15 @@ fun getMillisecondsToNearestEvenTime(skipHoursStart: Int, skipHoursEnd: Int): Lo
     // Calculate minutes to next even time (30-minute interval)
     val currentMinutes = now.get(Calendar.MINUTE)
 
+    nextEvenTime.set(Calendar.SECOND, 0)
+    nextEvenTime.set(Calendar.MILLISECOND, 0)
+
     if (currentMinutes < 30) {
         // Set to 30 minutes past current hour
         nextEvenTime.set(Calendar.MINUTE, 30)
-        nextEvenTime.set(Calendar.SECOND, 0)
-        nextEvenTime.set(Calendar.MILLISECOND, 0)
     } else {
         // Set to start of next hour
         nextEvenTime.set(Calendar.MINUTE, 0)
-        nextEvenTime.set(Calendar.SECOND, 0)
-        nextEvenTime.set(Calendar.MILLISECOND, 0)
         nextEvenTime.add(Calendar.HOUR_OF_DAY, 1)
     }
 

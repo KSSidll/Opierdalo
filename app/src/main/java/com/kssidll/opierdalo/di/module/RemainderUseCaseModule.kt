@@ -6,6 +6,7 @@ import com.kssidll.opierdalo.domain.usecase.reminder.GetAllReminderUseCase
 import com.kssidll.opierdalo.domain.usecase.reminder.GetReminderEntityUseCase
 import com.kssidll.opierdalo.domain.usecase.reminder.GetReminderUseCase
 import com.kssidll.opierdalo.domain.usecase.reminder.InsertReminderEntityUseCase
+import com.kssidll.opierdalo.domain.usecase.reminder.SetReminderCompleteStatusUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -47,5 +48,12 @@ class ReminderUseCaseModule {
         getAllReminderEntityUseCase: GetAllReminderEntityUseCase
     ): GetAllReminderUseCase {
         return GetAllReminderUseCase(getAllReminderEntityUseCase)
+    }
+
+    @Provides
+    fun provideSetReminderCompleteStatusUseCase(
+        reminderRepository: ReminderRepository
+    ): SetReminderCompleteStatusUseCase {
+        return SetReminderCompleteStatusUseCase(reminderRepository)
     }
 }
