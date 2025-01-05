@@ -67,7 +67,7 @@ data class ReminderEntity(
          */
         @Ignore
         fun checkParseFromName(name: String): ReminderEntityParseError? {
-            return if (name.isBlank()) ReminderEntityParseError.BlankNameError
+            return if (name.isBlank()) BlankNameError
             else null
         }
 
@@ -89,9 +89,9 @@ data class ReminderEntity(
             }
 
             return if (errors.isNotEmpty()) {
-                ReminderEntityParseResult.Failure(errors.toImmutableList())
+                Failure(errors.toImmutableList())
             } else {
-                ReminderEntityParseResult.Success(
+                Success(
                     ReminderEntity(
                         id = id,
                         name = name,
