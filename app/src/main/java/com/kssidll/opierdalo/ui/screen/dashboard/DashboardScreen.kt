@@ -1,5 +1,9 @@
 package com.kssidll.opierdalo.ui.screen.dashboard
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -24,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -37,7 +42,7 @@ import com.kssidll.opierdalo.domain.data.toReminder
 import com.kssidll.opierdalo.ui.theme.OpierdaloTheme
 import kotlinx.collections.immutable.persistentListOf
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun DashboardScreen(
     uiState: DashboardUiState,
@@ -101,16 +106,28 @@ fun DashboardScreen(
                 key = { uiState.reminder[it].identifier() }
             ) {
                 val reminder = uiState.reminder[it]
+                val interactionSource = remember { MutableInteractionSource() }
+
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .animateItem()
                         .fillMaxWidth()
+                        .combinedClickable(
+                            interactionSource = interactionSource,
+                            indication = LocalIndication.current,
+                            onClick = {
+                                onEvent(DashboardEvent.ToggleReminderCompleteStatus(reminder))
+                            },
+                            onLongClick = {
+                                onEvent(DashboardEvent.NavigateEditReminder(reminder))
+                            }
+                        )
                 ) {
                     Checkbox(
                         checked = reminder.complete,
-                        onCheckedChange = { checked ->
-                            onEvent(DashboardEvent.SetReminderCompleteStatus(reminder, checked))
+                        onCheckedChange = { _ ->
+                            onEvent(DashboardEvent.ToggleReminderCompleteStatus(reminder))
                         }
                     )
                     Text(

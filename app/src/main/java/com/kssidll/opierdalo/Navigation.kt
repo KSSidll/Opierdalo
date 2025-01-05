@@ -14,6 +14,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.kssidll.opierdalo.ui.screen.dashboard.DashboardRoute
+import com.kssidll.opierdalo.ui.screen.modify.add.AddReminderRoute
+import com.kssidll.opierdalo.ui.screen.modify.edit.EditReminderRoute
 import com.kssidll.opierdalo.ui.screen.settings.SettingsRoute
 import kotlinx.serialization.Serializable
 
@@ -24,6 +26,12 @@ sealed class NavigationDestinations {
 
     @Serializable
     data object Settings: NavigationDestinations()
+
+    @Serializable
+    data object AddReminder: NavigationDestinations()
+
+    @Serializable
+    data class EditReminder(val reminderId: Long): NavigationDestinations()
 }
 
 val defaultNavigateEasing = CubicBezierEasing(
@@ -105,6 +113,12 @@ fun Navigation(
             DashboardRoute(
                 navigateSettings = {
                     navController.navigate(NavigationDestinations.Settings)
+                },
+                navigateAddReminder = {
+                    navController.navigate(NavigationDestinations.AddReminder)
+                },
+                navigateEditReminder = { reminderId ->
+                    navController.navigate(NavigationDestinations.EditReminder(reminderId))
                 }
             )
         }
@@ -112,6 +126,18 @@ fun Navigation(
         composable<NavigationDestinations.Settings> {
             SettingsRoute(
                 navigateBack = navigateBack,
+            )
+        }
+
+        composable<NavigationDestinations.AddReminder> {
+            AddReminderRoute(
+                navigateBack = navigateBack
+            )
+        }
+
+        composable<NavigationDestinations.EditReminder> {
+            EditReminderRoute(
+                navigateBack = navigateBack
             )
         }
     }

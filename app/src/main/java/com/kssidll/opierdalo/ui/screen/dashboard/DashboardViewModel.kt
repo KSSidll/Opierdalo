@@ -5,10 +5,8 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kssidll.opierdalo.data.data.ReminderEntity
 import com.kssidll.opierdalo.domain.data.Reminder
 import com.kssidll.opierdalo.domain.usecase.reminder.GetAllReminderUseCase
-import com.kssidll.opierdalo.domain.usecase.reminder.InsertReminderEntityUseCase
 import com.kssidll.opierdalo.domain.usecase.reminder.SetReminderCompleteStatusUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.ImmutableList
@@ -30,14 +28,14 @@ data class DashboardUiState(
 sealed class DashboardEvent {
     data object NavigateSettings: DashboardEvent()
     data object NavigateAddNewReminder: DashboardEvent()
-    data class SetReminderCompleteStatus(val reminder: Reminder, val complete: Boolean): DashboardEvent()
+    data class NavigateEditReminder(val reminder: Reminder): DashboardEvent()
+    data class ToggleReminderCompleteStatus(val reminder: Reminder): DashboardEvent()
 }
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
     getAllReminderUseCase: GetAllReminderUseCase,
     private val setReminderCompleteStatusUseCase: SetReminderCompleteStatusUseCase,
-    private val insertReminderEntityUseCase: InsertReminderEntityUseCase
 ): ViewModel() {
     private val _uiState = MutableStateFlow(
         DashboardUiState()
@@ -60,22 +58,15 @@ class DashboardViewModel @Inject constructor(
         when (event) {
             is DashboardEvent.NavigateSettings -> {}
 
-            is DashboardEvent.NavigateAddNewReminder -> {
-                //TODO remove and nav in route
-                viewModelScope.launch {
-                    insertReminderEntityUseCase(
-                        ReminderEntity(
-                            name = "test"
-                        )
-                    )
-                }
-            }
+            is DashboardEvent.NavigateAddNewReminder -> {}
 
-            is DashboardEvent.SetReminderCompleteStatus -> setReminderCompleteStatus(event.reminder, event.complete)
+            is DashboardEvent.NavigateEditReminder -> {}
+
+            is DashboardEvent.ToggleReminderCompleteStatus -> setReminderCompleteStatus(event.reminder)
         }
     }
 
-    private fun setReminderCompleteStatus(reminder: Reminder, complete: Boolean) = viewModelScope.launch {
-        setReminderCompleteStatusUseCase(reminder, complete)
+    private fun setReminderCompleteStatus(reminder: Reminder) = viewModelScope.launch {
+        setReminderCompleteStatusUseCase(reminder, !reminder.complete)
     }
 }

@@ -32,7 +32,7 @@ abstract class AppDatabase: RoomDatabase() {
     companion object {
         /**
          * @param context app context
-         * @param name name of the database or absolute path if not internal location, defaults to internal location with [DATABASE_NAME] name
+         * @param name name of the database or absolute path if not internal location, Defaults to internal location with [DATABASE_NAME] name
          * @return [RoomDatabase.Builder] of [AppDatabase] for [name]
          */
         private fun builder(
