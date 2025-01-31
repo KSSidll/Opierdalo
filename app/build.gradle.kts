@@ -15,7 +15,7 @@ android {
     val appNamespace = "com.kssidll.opierdalo"
 
     namespace = appNamespace
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = appNamespace
@@ -56,8 +56,8 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
+    kotlin {
+        jvmToolchain(17)
     }
 
     buildFeatures {
